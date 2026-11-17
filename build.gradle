@@ -1,0 +1,37 @@
+plugins {
+    id 'org.springframework.boot' version '4.1.2' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    group = 'com.tutorial'
+    version = '0.0.1-SNAPSHOT'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    dependencies {
+        testImplementation platform('org.junit:junit-bom:6.0.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+        testImplementation 'org.testcontainers:testcontainers:2.0.5'
+        testImplementation 'org.testcontainers:testcontainers-mongodb:2.0.5'
+        testImplementation 'org.testcontainers:testcontainers-junit-jupiter:2.0.5'
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+}
