@@ -11,6 +11,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
 
     group = 'com.tutorial'
     version = '0.0.1-SNAPSHOT'
@@ -25,10 +26,17 @@ subprojects {
         testImplementation platform('org.junit:junit-bom:6.0.0')
         testImplementation 'org.junit.jupiter:junit-jupiter'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        runtimeOnly "io.netty:netty-resolver-dns-native-macos::osx-aarch_64"
 
         testImplementation 'org.testcontainers:testcontainers:2.0.5'
         testImplementation 'org.testcontainers:testcontainers-mongodb:2.0.5'
         testImplementation 'org.testcontainers:testcontainers-junit-jupiter:2.0.5'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:2025.1.4"
+        }
     }
 
     tasks.withType(Test).configureEach {
