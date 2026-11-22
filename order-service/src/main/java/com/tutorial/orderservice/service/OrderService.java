@@ -1,8 +1,9 @@
 package com.tutorial.orderservice.service;
 
+import com.tutorial.orderservice.event.OrderPlacedEvent;
 import com.tutorial.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import com.tutorial.orderservice.dto.*;
 import com.tutorial.orderservice.model.*;
@@ -20,6 +21,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     public String placeOrder(OrderRequest orderRequest){
         Order order = new Order();
@@ -48,7 +50,8 @@ public class OrderService {
         }
 
         orderRepository.save(order);
-        return "Order places successfully";
+        kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
+        return "Order placed successfully";
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto dto){
